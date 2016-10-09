@@ -16,8 +16,11 @@ def nameToTicker(companyName):
 
 # print(nameToTicker("microsoft"))
 @app.route("/")
-def APICalls(companyName="apple"):
-	ticker = nameToTicker(companyName)
+@app.route('/<path:path>')
+def APICalls(path):
+    # return 'You want path: %s' % path
+# def APICalls(companyName="apple"):
+	ticker = nameToTicker(path)
 	endDate = "20150930"
 	startDate = "20150815"
 	callOneDay="""https://www.blackrock.com/tools/hackathon/performance?\
@@ -37,7 +40,6 @@ endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 	obj = {u"oneDayChange": r1, u"sinceStartDateChange": r2}
 	return json.dumps(obj)
 
-print(APICalls('apple'))
 
 
 if __name__ == "__main__":
