@@ -94,7 +94,5 @@ endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 	obj = {u"oneDayChange": r1, u"sinceStartDateChange": r2}
 	return json.dumps(obj)
 
-
-
 if __name__ == "__main__":
     app.run()
