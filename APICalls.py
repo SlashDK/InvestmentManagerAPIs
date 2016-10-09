@@ -27,6 +27,17 @@ endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 		print(portfolioGains)
 	return (portfolioGains)*100/origInvest 
 
+def graphData(companyName):
+	callFromMonth="""https://www.blackrock.com/tools/hackathon/performance?endDate=20151008&fromDate=20150908&identifiers]\
+=AAPL&includeReturnsMap=true&outputDataExpression=resultMap[%%27RETURNS%%27][0][%%27performanceChart%%27]&startDate=20150908&toDate\
+=20151008&useCache=true"""
+	r=requests.get(callFromMonth)
+	r=r.content
+	dataList=[]
+	for i in r:
+		dataList.append(i[1])
+	return dataList
+
 def portfolioCompanies():
 	companies = ""
 	print( myPortfolio)
