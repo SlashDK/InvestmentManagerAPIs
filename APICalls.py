@@ -2,7 +2,7 @@ import sys
 import csv
 import requests
 import json
-
+from socketIO_client import SocketIO, LoggingNamespace
 from flask import Flask
 app = Flask(__name__)
 
@@ -60,6 +60,8 @@ def nameToTicker(companyName):
             if(companyName in row[1]):
                 return row[0]
     return "invalid"
+def on_bbb_response(*args):
+    print('on_bbb_response', args)
 
 # print(nameToTicker("microsoft"))
 @app.route("/")
@@ -77,17 +79,25 @@ def APICalls(path="apple"):
 	if(ticker=="invalid"):
 		ticker="BLUE"
 	endDate = "20151008"
+
 	if(add=="portfolio"):
 		portfolioAdder(ticker,amount,startDate,path)
+
 	if(add=="tell"):
 		obj = {u"netGains": gains(endDate)}
 		return json.dumps(obj)
+
 	if(add=="tellcompanies"):
 		print(str(portfolioCompanies))
 		obj = {u"companies": portfolioCompanies()}
 		return json.dumps(obj)
+	
 	if(add=="display"):
-		obj = {"data":graphData(path)}
+		data=graphData(path)
+		with SocketIO('https://alexaportfolio.herokuapp.com') as socketIO:
+			socketIO.emit('bbb', {'xxx': 'yyy'}, on_bbb_response())
+			socketIO.wait_for_callbacks(seconds=1)
+		obj = {"data":data}
 		return json.dumps(obj)
 	callOneDay="""https://www.blackrock.com/tools/hackathon/performance?\
 endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
