@@ -7,12 +7,13 @@ from flask import Flask
 app = Flask(__name__)
 
 def nameToTicker(companyName):
-    with open('yahoo.csv', 'r') as csvfile:
-        spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+    with open('companylist.csv', 'r') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for row in spamreader:
-            row[1:] = map(lambda x: x.lower(),row[1:])
-            if(companyName in row):
-                return row[0][:-1]
+            row[1]=row[1].lower()
+            if(companyName in row[1]):
+                return row[0]
+    return "invalid"
 
 # print(nameToTicker("microsoft"))
 @app.route("/")
@@ -20,9 +21,14 @@ def nameToTicker(companyName):
 def APICalls(path="apple"):
     # return 'You want path: %s' % path
 # def APICalls(companyName="apple"):
+	if ('/' in path):
+		path,startDate=path.split('/')
+	else:
+		startDate = "20150815"
 	ticker = nameToTicker(path)
+	if(ticker=="invalid"):
+		ticker="BLUE"
 	endDate = "20150930"
-	startDate = "20150815"
 	callOneDay="""https://www.blackrock.com/tools/hackathon/performance?\
 endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 'RETURNS'%%5D%%5B0%%5D.latestPerf%%5B'oneDay'%%5D&startDate=%s&useCache=true"""%(endDate,ticker,startDate)
