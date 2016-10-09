@@ -93,11 +93,13 @@ def APICalls(path="apple"):
 		return json.dumps(obj)
 	
 	if(add=="display"):
-		data=graphData(path)
-		with SocketIO('https://alexaportfolio.herokuapp.com') as socketIO:
-			socketIO.emit('bbb', {'xxx': 'yyy'}, on_bbb_response())
-			socketIO.wait_for_callbacks(seconds=1)
-		obj = {"data":data}
+		gdata=graphData(path)
+		# with SocketIO('https://alexaportfolio.herokuapp.com') as socketIO:
+		# 	socketIO.emit('bbb', {'xxx': 'yyy'}, on_bbb_response())
+		# 	socketIO.wait_for_callbacks(seconds=1)
+		r = requests.post("https://alexaportfolio.herokuapp.com/display", data={'data': gdata})
+		print(r.status_code, r.reason)
+		obj = {"data":gdata}
 		return json.dumps(obj)
 	callOneDay="""https://www.blackrock.com/tools/hackathon/performance?\
 endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
