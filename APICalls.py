@@ -17,7 +17,7 @@ def nameToTicker(companyName):
 # print(nameToTicker("microsoft"))
 @app.route("/")
 @app.route('/<path:path>')
-def APICalls(path):
+def APICalls(path="apple"):
     # return 'You want path: %s' % path
 # def APICalls(companyName="apple"):
 	ticker = nameToTicker(path)
