@@ -9,19 +9,23 @@ app = Flask(__name__)
 myPortfolio=[]
 
 def gains(currDate):
+	print(myPortfolio)
 	origInvest=0
 	portfolioGains=0
 	for i in myPortfolio:
-		origInvest+=i[1]
+		print(i[1])
+		origInvest+=int(i[1])
 		callFromStart = """https://www.blackrock.com/tools/hackathon/performance?\
 endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 'RETURNS'%%5D%%5B0%%5D.latestPerf%%5B'sinceStartDate'%%5D&startDate=%s&useCache=true"""%(currDate,i[0],i[2])
 		r=requests.get(callFromStart)
 		r=str(r.content)
+		print(r)
 		r=r[2:r.find('.')+4]
-		r=float(r)*i[1]
+		r=float(r)*int(i[1])
 		portfolioGains+=r
-	return (origInvest + portfolioGains)*100/origInvest 
+		print(portfolioGains)
+	return ((origInvest + portfolioGains))/origInvest 
 
 def portfolioAdder(ticker,amount,date):
 	myPortfolio.append((ticker,amount,date))
@@ -41,8 +45,13 @@ def nameToTicker(companyName):
 def APICalls(path="apple"):
     # return 'You want path: %s' % path
 # def APICalls(companyName="apple"):
+	currDate="20151010"
+	startDate="20151030"
+	add=""
+	amount=1
 	if ('/' in path):
 		path,startDate,add,amount=path.split('/')
+		print(path,add,startDate,amount)
 	ticker = nameToTicker(path)
 	if(ticker=="invalid"):
 		ticker="BLUE"
@@ -50,7 +59,7 @@ def APICalls(path="apple"):
 	if(add=="portfolio"):
 		portfolioAdder(ticker,amount,startDate)
 	if(add=="tell"):
-		obj = {u"netGains": gains(startDate)}
+		obj = {u"netGains": gains(currDate)}
 		return json.dumps(obj)
 	callOneDay="""https://www.blackrock.com/tools/hackathon/performance?\
 endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
@@ -61,7 +70,7 @@ endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 	callGraphData="""https://www.blackrock.com/tools/hackathon/performance?\
 endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 'RETURNS'%%5D%%5B0%%5D.latestPerf%%5B'sinceStartDate'%%5D&startDate=%s&useCache=true"""%(endDate,ticker,startDate) 
-	print(callGraphData)
+	# print(callGraphData)
 	r1=requests.get(callOneDay)
 	r2=requests.get(callFromStart)
 	print(type(r1.content),r1.content)
