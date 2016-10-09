@@ -28,14 +28,17 @@ endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 	return (portfolioGains)*100/origInvest 
 
 def graphData(companyName):
-	callFromMonth="""https://www.blackrock.com/tools/hackathon/performance?endDate=20151008&fromDate=20150908&identifiers]\
-=AAPL&includeReturnsMap=true&outputDataExpression=resultMap[%%27RETURNS%%27][0][%%27performanceChart%%27]&startDate=20150908&toDate\
+	callFromMonth="""https://www.blackrock.com/tools/hackathon/performance?endDate=20151008&fromDate=20150908&identifiers\
+=AAPL&includeReturnsMap=true&outputDataExpression=resultMap['RETURNS'][0]['performanceChart']+&startDate=20150908&toDate\
 =20151008&useCache=true"""
 	r=requests.get(callFromMonth)
-	r=r.content
-	dataList=[]
+	r=str(r.content)[4:-3]
+	r=r.split('],[')
+	# print(r)
+	dataList=[1.0]
+	# print(type(r),len(r))
 	for i in r:
-		dataList.append(i[1])
+		dataList.append(float(i[14:20]))
 	return dataList
 
 def portfolioCompanies():
@@ -82,6 +85,9 @@ def APICalls(path="apple"):
 	if(add=="tellcompanies"):
 		print(str(portfolioCompanies))
 		obj = {u"companies": portfolioCompanies()}
+		return json.dumps(obj)
+	if(add=="display"):
+		obj = {"data":graphData(path)}
 		return json.dumps(obj)
 	callOneDay="""https://www.blackrock.com/tools/hackathon/performance?\
 endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
