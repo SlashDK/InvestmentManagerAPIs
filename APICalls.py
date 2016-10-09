@@ -29,12 +29,12 @@ endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 
 def graphData(companyName):
 	callFromMonth="""https://www.blackrock.com/tools/hackathon/performance?endDate=20151008&fromDate=20150908&identifiers\
-=AAPL&includeReturnsMap=true&outputDataExpression=resultMap['RETURNS'][0]['performanceChart']+&startDate=20150908&toDate\
-=20151008&useCache=true"""
+=%s&includeReturnsMap=true&outputDataExpression=resultMap['RETURNS'][0]['performanceChart']+&startDate=20150908&toDate\
+=20151008&useCache=true"""%(companyName)
 	r=requests.get(callFromMonth)
 	r=str(r.content)[4:-3]
 	r=r.split('],[')
-	# print(r)
+	print(r)
 	dataList=[1.0]
 	# print(type(r),len(r))
 	for i in r:
@@ -93,7 +93,7 @@ def APICalls(path="apple"):
 		return json.dumps(obj)
 	
 	if(add=="display"):
-		gdata=graphData(path)
+		gdata=graphData(ticker)
 		# with SocketIO('https://alexaportfolio.herokuapp.com') as socketIO:
 		# 	socketIO.emit('bbb', {'xxx': 'yyy'}, on_bbb_response())
 		# 	socketIO.wait_for_callbacks(seconds=1)
