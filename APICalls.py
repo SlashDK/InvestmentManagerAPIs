@@ -25,7 +25,7 @@ endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 		r=float(r)*int(i[1])
 		portfolioGains+=r
 		print(portfolioGains)
-	return ((origInvest + portfolioGains))/origInvest 
+	return (portfolioGains)*100/origInvest 
 
 def portfolioAdder(ticker,amount,date):
 	myPortfolio.append((ticker,amount,date))
