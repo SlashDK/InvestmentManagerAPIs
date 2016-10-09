@@ -27,8 +27,16 @@ endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 		print(portfolioGains)
 	return (portfolioGains)*100/origInvest 
 
-def portfolioAdder(ticker,amount,date):
-	myPortfolio.append((ticker,amount,date))
+def portfolioCompanies():
+	companies = ""
+	print( myPortfolio)
+	for i in myPortfolio:
+		# print(i)
+		companies=companies+" "+(i[3])
+	return companies
+
+def portfolioAdder(ticker,amount,date,path):
+	myPortfolio.append((ticker,amount,date,path))
 
 def nameToTicker(companyName):
     with open('companylist.csv', 'r') as csvfile:
@@ -45,8 +53,7 @@ def nameToTicker(companyName):
 def APICalls(path="apple"):
     # return 'You want path: %s' % path
 # def APICalls(companyName="apple"):
-	currDate="20151010"
-	startDate="20151030"
+	startDate="20151007"
 	add=""
 	amount=1
 	if ('/' in path):
@@ -55,15 +62,20 @@ def APICalls(path="apple"):
 	ticker = nameToTicker(path)
 	if(ticker=="invalid"):
 		ticker="BLUE"
-	endDate = "20150930"
+	endDate = "20151008"
 	if(add=="portfolio"):
-		portfolioAdder(ticker,amount,startDate)
+		portfolioAdder(ticker,amount,startDate,path)
 	if(add=="tell"):
-		obj = {u"netGains": gains(currDate)}
+		obj = {u"netGains": gains(endDate)}
+		return json.dumps(obj)
+	if(add=="tellcompanies"):
+		print(str(portfolioCompanies))
+		obj = {u"companies": portfolioCompanies()}
 		return json.dumps(obj)
 	callOneDay="""https://www.blackrock.com/tools/hackathon/performance?\
 endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 'RETURNS'%%5D%%5B0%%5D.latestPerf%%5B'oneDay'%%5D&startDate=%s&useCache=true"""%(endDate,ticker,startDate)
+	print(callOneDay)
 	callFromStart = """https://www.blackrock.com/tools/hackathon/performance?\
 endDate=%s&identifiers=%s&outputDataExpression=resultMap%%5B\
 'RETURNS'%%5D%%5B0%%5D.latestPerf%%5B'sinceStartDate'%%5D&startDate=%s&useCache=true"""%(endDate,ticker,startDate) 
