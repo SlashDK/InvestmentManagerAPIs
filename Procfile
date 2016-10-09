@@ -1,1 +1,1 @@
-web: python APICalls.py
+web: gunicorn APICalls:app
