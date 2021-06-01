@@ -1,6 +1,6 @@
 Flask==0.11.1
 Flask-Ask==0.7.8
-urllib3==1.7.1
+urllib3==1.26.5
 virtualenv==1.11.4
 requests
 socketIO_client
